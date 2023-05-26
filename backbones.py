@@ -1,5 +1,7 @@
 import torch.nn as nn
 from torchvision import models
+from nets.densenet import densenet_bearing
+import torch.nn.functional as F
 
 resnet_dict = {
     "resnet18": models.resnet18,
@@ -16,6 +18,25 @@ def get_backbone(name):
         return AlexNetBackbone()
     elif "dann" == name.lower():
         return DaNNBackbone()
+    elif "densenet" == name.lower():
+        return DensenetBackbone()
+
+class DensenetBackbone(nn.Module):
+    def __init__(self):
+        super(DensenetBackbone, self).__init__()
+        model_densenet = densenet_bearing(pretrained=False)
+        self.features = model_densenet.features
+        self._feature_dim = model_densenet.fc1.in_features
+
+    def forward(self, x):
+        x = self.features(x)
+        x = F.relu(x, inplace=True)
+        x = F.adaptive_avg_pool2d(x, (1, 1))
+        x = x.view(x.size(0), -1)
+        return x
+
+    def output_num(self):
+        return self._feature_dim
 
 class DaNNBackbone(nn.Module):
     def __init__(self, n_input=224*224*3, n_hidden=256):

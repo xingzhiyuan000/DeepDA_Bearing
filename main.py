@@ -30,7 +30,7 @@ def get_parser():
     parser.add_argument('--tgt_domain', type=str, required=True)
     
     # training related
-    parser.add_argument('--batch_size', type=int, default=8)
+    parser.add_argument('--batch_size', type=int, default=2)
     parser.add_argument('--n_epoch', type=int, default=100)
     parser.add_argument('--early_stop', type=int, default=0, help="Early stopping")
     parser.add_argument('--epoch_based_training', type=str2bool, default=False, help="Epoch-based training / Iteration-based training")

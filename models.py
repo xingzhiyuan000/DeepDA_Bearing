@@ -43,9 +43,9 @@ class TransferNet(nn.Module):
         kwargs = {}
         if self.transfer_loss == "lmmd":
             kwargs['source_label'] = source_label
-            yyy=source_label
+            # yyy=source_label
             target_clf = self.classifier_layer(target)
-            xxx=torch.nn.functional.softmax(target_clf, dim=1)
+            # xxx=torch.nn.functional.softmax(target_clf, dim=1)
             kwargs['target_logits'] = torch.nn.functional.softmax(target_clf, dim=1)
         elif self.transfer_loss == "daan":
             source_clf = self.classifier_layer(source)
