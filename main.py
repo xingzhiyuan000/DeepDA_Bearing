@@ -155,6 +155,8 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
         
         info = 'Epoch: [{:2d}/{}], cls_loss: {:.4f}, transfer_loss: {:.4f}, total_Loss: {:.4f}'.format(
                         e, args.n_epoch, train_loss_clf.avg, train_loss_transfer.avg, train_loss_total.avg)
+        with open('./logs/result.txt', 'a') as file:
+            file.write(info + '\n')
         # Test
         stop += 1
         test_acc, test_loss = test(model, target_test_loader, args)
