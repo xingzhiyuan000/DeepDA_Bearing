@@ -47,7 +47,8 @@ def get_parser():
     parser.add_argument('--lr_scheduler', type=str2bool, default=True)
 
     # transfer related
-    parser.add_argument('--transfer_loss_weight', type=float, default=10)
+    parser.add_argument('--transfer_loss_weight_fir', type=float, default=10)
+    parser.add_argument('--transfer_loss_weight_sec', type=float, default=10)
     parser.add_argument('--transfer_loss', type=str, default='mmd')
     return parser
 
@@ -137,10 +138,10 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
                 args.device), label_source.to(args.device)
             data_target = data_target.to(args.device)
             
-            clf_loss, transfer_loss = model(data_source, data_target, label_source)
-            loss = clf_loss + args.transfer_loss_weight * transfer_loss
+            clf_loss, transfer_loss_fir, transfer_loss_sec = model(data_source, data_target, label_source)
+            loss = clf_loss + args.transfer_loss_weight_fir * transfer_loss_fir + args.transfer_loss_weight_sec * transfer_loss_sec
             # loss = clf_loss
-            print('【分类】loss:{}|【迁移】loss:{}|【整体】loss:{}'.format(clf_loss.item(),transfer_loss.item(),loss.item()) )
+            print('【分类】loss:{}|【迁移1】loss:{}|【迁移1】loss:{}|【整体】loss:{}'.format(clf_loss.item(),transfer_loss_fir.item(),transfer_loss_sec.item(),loss.item()) )
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
