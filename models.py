@@ -20,7 +20,7 @@ class TransferNet(nn.Module):
             feature_dim = bottleneck_width
         else:
             feature_dim = self.base_network.output_num()
-        
+        # feature_dim = self.base_network.output_num()
         self.classifier_layer = nn.Linear(feature_dim, num_class)
         transfer_loss_args = {
             "loss_type": self.transfer_loss,

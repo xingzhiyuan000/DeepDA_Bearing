@@ -26,7 +26,7 @@ class DensenetBackbone(nn.Module):
         super(DensenetBackbone, self).__init__()
         model_densenet = densenet_bearing(pretrained=False)
         self.features = model_densenet.features
-        self._feature_dim = model_densenet.fc1.in_features
+        self._feature_dim = 448
 
     def forward(self, x):
         x = self.features(x)

@@ -7,7 +7,7 @@ transfer_loss_weight: 0.5
 transfer_loss: lmmd
 
 # Optimizer related
-lr: 0.001
+lr: 0.01
 weight_decay: 5e-4
 momentum: 0.9
 lr_scheduler: True
@@ -15,8 +15,8 @@ lr_gamma: 0.0003
 lr_decay: 0.75
 
 # Training related
-n_iter_per_epoch: 500
-n_epoch: 20
+n_iter_per_epoch: 100
+n_epoch: 30
 
 # Others
 seed: 1

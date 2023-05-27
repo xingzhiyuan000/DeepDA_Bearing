@@ -144,7 +144,7 @@ class DenseNet(nn.Module):
 
         self.fc1 = nn.Linear(in_features=448, out_features=13, bias=True)
         # 将数据展平
-        # self.flatten = nn.Flatten()
+        self.flatten = nn.Flatten()
         # 1024-----64
         # self.fc1 = nn.Linear(in_features=448 * 2, out_features=13, bias=True)
         # 64-----13
@@ -166,10 +166,10 @@ class DenseNet(nn.Module):
 
         # out = torch.flatten(out, 1)
         out = self.flatten(out)
-        self.featuremap = out.detach()  # 核心代码
-        out = self.classifier(out)
+        # self.featuremap = out.detach()  # 核心代码
+        # out = self.classifier(out)
 
-        # out = self.fc1(out)
+        out = self.fc1(out)
         # x = self.dropout(x)
         # out = F.relu(out)
         # out = self.fc2(out)
