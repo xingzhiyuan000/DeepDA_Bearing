@@ -122,7 +122,8 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
     for e in range(1, args.n_epoch+1):
         model.train()
         train_loss_clf = utils.AverageMeter()
-        train_loss_transfer = utils.AverageMeter()
+        train_loss_transfer_fir = utils.AverageMeter()
+        train_loss_transfer_sec = utils.AverageMeter()
         train_loss_total = utils.AverageMeter()
         model.epoch_based_processing(n_batch)
         
@@ -149,13 +150,14 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
                 lr_scheduler.step()
 
             train_loss_clf.update(clf_loss.item())
-            train_loss_transfer.update(transfer_loss.item())
+            train_loss_transfer_fir.update(transfer_loss_fir.item())
+            train_loss_transfer_sec.update(transfer_loss_sec.item())
             train_loss_total.update(loss.item())
             
-        log.append([train_loss_clf.avg, train_loss_transfer.avg, train_loss_total.avg])
+        log.append([train_loss_clf.avg, train_loss_transfer_fir.avg, train_loss_transfer_sec.avg, train_loss_total.avg])
         
-        info = 'Epoch: [{:2d}/{}], cls_loss: {:.4f}, transfer_loss: {:.4f}, total_Loss: {:.4f}'.format(
-                        e, args.n_epoch, train_loss_clf.avg, train_loss_transfer.avg, train_loss_total.avg)
+        info = 'Epoch: [{:2d}/{}], 分类损失: {:.4f}, 迁移损失1: {:.4f},迁移损失2: {:.4f}, total_Loss: {:.4f}'.format(
+                        e, args.n_epoch, train_loss_clf.avg, train_loss_transfer_fir.avg, train_loss_transfer_sec.avg,train_loss_total.avg)
         with open('./result.txt', 'a') as file:
             file.write(info + '\n')
         # Test
