@@ -49,7 +49,8 @@ def get_parser():
     # transfer related
     parser.add_argument('--transfer_loss_weight_fir', type=float, default=10)
     parser.add_argument('--transfer_loss_weight_sec', type=float, default=10)
-    parser.add_argument('--transfer_loss', type=str, default='mmd')
+    parser.add_argument('--transfer_loss_fir', type=str, default='mmd')
+    parser.add_argument('--transfer_loss_sec', type=str, default='lmmd')
     return parser
 
 def set_random_seed(seed=0):
@@ -77,7 +78,7 @@ def load_data(args):
 
 def get_model(args):
     model = models.TransferNet(
-        args.n_class, transfer_loss=args.transfer_loss, base_net=args.backbone, max_iter=args.max_iter, use_bottleneck=args.use_bottleneck).to(args.device)
+        args.n_class, transfer_loss_fir=args.transfer_loss_fir,transfer_loss_sec=args.transfer_loss_sec, base_net=args.backbone, max_iter=args.max_iter, use_bottleneck=args.use_bottleneck).to(args.device)
     return model
 
 def get_optimizer(model, args):
