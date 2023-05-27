@@ -163,6 +163,7 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
         info += ', test_loss {:4f}, test_acc: {:.4f}'.format(test_loss, test_acc)
         np_log = np.array(log, dtype=float)
         np.savetxt('train_log.csv', np_log, delimiter=',', fmt='%.6f')
+        np.savetxt('./logs/train_log.csv', np_log, delimiter=',', fmt='%.6f')
         if best_acc < test_acc:
             best_acc = test_acc
             stop = 0
