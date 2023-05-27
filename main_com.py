@@ -143,7 +143,7 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
             clf_loss, transfer_loss_fir, transfer_loss_sec = model(data_source, data_target, label_source)
             loss = clf_loss + args.transfer_loss_weight_fir * transfer_loss_fir + args.transfer_loss_weight_sec * transfer_loss_sec
             # loss = clf_loss
-            print('【分类】loss:{}|【迁移1】loss:{}|【迁移1】loss:{}|【整体】loss:{}'.format(clf_loss.item(),transfer_loss_fir.item(),transfer_loss_sec.item(),loss.item()) )
+            print('分类loss:{:.4f}|迁移1loss:{:.4f}|迁移1loss:{:.4f}|整体loss:{:.4f}'.format(clf_loss.item(),transfer_loss_fir.item(),transfer_loss_sec.item(),loss.item()) )
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -157,16 +157,13 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
             
         log.append([train_loss_clf.avg, train_loss_transfer_fir.avg, train_loss_transfer_sec.avg, train_loss_total.avg])
         
-        info = 'Epoch: [{:2d}/{}], 分类损失: {:.4f}, 迁移损失1: {:.4f},迁移损失2: {:.4f}, total_Loss: {:.4f}'.format(
+        info = '【Epoch】: [{:2d}/{}], 【分类损失】: {:.4f}, 【迁移损失1】: {:.4f},【迁移损失2】: {:.4f}, 【total_Loss】: {:.4f}'.format(
                         e, args.n_epoch, train_loss_clf.avg, train_loss_transfer_fir.avg, train_loss_transfer_sec.avg,train_loss_total.avg)
-        with open('./result.txt', 'a') as file:
-            file.write(info + '\n')
-        with open('./logs/result.txt', 'a') as file:
-            file.write(info + '\n')
+
         # Test
         stop += 1
         test_acc, test_loss = test(model, target_test_loader, args)
-        info += ', test_loss {:4f}, test_acc: {:.4f}'.format(test_loss, test_acc)
+        info += ', 【test_loss】 {:4f}, 【test_acc】: {:.4f}'.format(test_loss, test_acc)
         np_log = np.array(log, dtype=float)
         np.savetxt('train_log.csv', np_log, delimiter=',', fmt='%.6f')
         if best_acc < test_acc:
@@ -176,6 +173,10 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
             print(info)
             break
         print(info)
+        with open('./result.txt', 'a') as file:
+            file.write(info + '\n')
+        with open('./logs/result.txt', 'a') as file:
+            file.write(info + '\n')
     print('Transfer result: {:.4f}'.format(best_acc))
 
 def main():
