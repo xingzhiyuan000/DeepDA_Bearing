@@ -140,7 +140,7 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
             clf_loss, transfer_loss = model(data_source, data_target, label_source)
             loss = clf_loss + args.transfer_loss_weight * transfer_loss
             # loss = clf_loss
-            print('【分类】loss:{}|【迁移】loss:{}|【整体】loss:{}'.format(clf_loss.item(),transfer_loss.item(),loss.item()) )
+            print('分类loss:{:.4f}|迁移loss:{:.4f}|整体loss:{:.4f}'.format(clf_loss.item(),transfer_loss.item(),loss.item()) )
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -153,7 +153,7 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
             
         log.append([train_loss_clf.avg, train_loss_transfer.avg, train_loss_total.avg])
         
-        info = 'Epoch: [{:2d}/{}], cls_loss: {:.4f}, transfer_loss: {:.4f}, total_Loss: {:.4f}'.format(
+        info = 'Epoch: [{:2d}/{}], 【分类Loss】: {:.4f}, 【迁移Loss】: {:.4f}, 【整体Loss】: {:.4f}'.format(
                         e, args.n_epoch, train_loss_clf.avg, train_loss_transfer.avg, train_loss_total.avg)
         with open('./result.txt', 'a') as file:
             file.write(info + '\n')
@@ -170,6 +170,10 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
             print(info)
             break
         print(info)
+        with open('./result.txt', 'a') as file:
+            file.write(info + '\n')
+        with open('./logs/result.txt', 'a') as file:
+            file.write(info + '\n')
     print('Transfer result: {:.4f}'.format(best_acc))
 
 def main():
