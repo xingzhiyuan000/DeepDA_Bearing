@@ -2,7 +2,7 @@ import configargparse
 import data_loader
 import os
 import torch
-import models
+import models_com as models
 import utils
 from utils import str2bool
 import numpy as np
