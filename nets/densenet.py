@@ -220,4 +220,4 @@ if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     m = densenet_bearing(False).to(device)
     # print(m)
-    summary(m, input_size=(3, 32, 32))
+    summary(m, input_size=(1, 32, 32))
