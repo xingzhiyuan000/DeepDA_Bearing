@@ -16,7 +16,7 @@ lr_decay: 0.75
 
 # Training related
 n_iter_per_epoch: 100
-n_epoch: 30
+n_epoch: 50
 
 # Others
 seed: 1
