@@ -49,8 +49,13 @@ class TransferNet(nn.Module):
         # transfer
         kwargs_fir = {}
         kwargs_sec = {}
-        
-        transfer_loss_fir = self.adapt_loss_fir(source, target, **kwargs_fir)
+
+        if self.transfer_loss_fir == "mmd":
+            transfer_loss_fir = self.adapt_loss_fir(source, target, **kwargs_fir)
+        elif self.transfer_loss_fir == "bnm":
+            tar_clf = self.classifier_layer(target)
+            target = nn.Softmax(dim=1)(tar_clf)
+            transfer_loss_fir = self.transfer_loss_fir(source, target, **kwargs_fir)
 
         kwargs_sec['source_label'] = source_label
         target_clf = self.classifier_layer(target)
