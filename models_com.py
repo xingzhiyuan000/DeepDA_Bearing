@@ -54,7 +54,8 @@ class TransferNet(nn.Module):
             transfer_loss_fir = self.adapt_loss_fir(source, target, **kwargs_fir)
         elif self.transfer_loss_fir == "bnm":
             tar_clf = self.classifier_layer(target)
-            target = nn.Softmax(dim=1)(tar_clf)
+            # target = nn.Softmax(dim=1)(tar_clf)
+            target = torch.nn.functional.softmax(tar_clf, dim=1)
             transfer_loss_fir = self.adapt_loss_fir(source, target, **kwargs_fir)
 
         kwargs_sec['source_label'] = source_label
