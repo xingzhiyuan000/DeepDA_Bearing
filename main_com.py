@@ -141,7 +141,7 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
             data_target = data_target.to(args.device)
             
             clf_loss, transfer_loss_fir, transfer_loss_sec = model(data_source, data_target, label_source)
-            loss = clf_loss - args.transfer_loss_weight_fir * transfer_loss_fir + args.transfer_loss_weight_sec * transfer_loss_sec
+            loss = clf_loss + args.transfer_loss_weight_fir * transfer_loss_fir + args.transfer_loss_weight_sec * transfer_loss_sec
             # loss = clf_loss
             print('分类loss:{:.4f}|迁移1loss:{:.4f}|迁移2loss:{:.4f}|整体loss:{:.4f}'.format(clf_loss.item(),transfer_loss_fir.item(),transfer_loss_sec.item(),loss.item()) )
             optimizer.zero_grad()
