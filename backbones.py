@@ -1,6 +1,7 @@
 import torch.nn as nn
 from torchvision import models
 from nets.densenet import densenet_bearing
+from nets.ghostnet import ghostnet
 import torch.nn.functional as F
 
 resnet_dict = {
@@ -20,6 +21,8 @@ def get_backbone(name):
         return DaNNBackbone()
     elif "densenet" == name.lower():
         return DensenetBackbone()
+    elif "ghostnet" == name.lower():
+        return GhostBackbone()
 
 class DensenetBackbone(nn.Module):
     def __init__(self):
@@ -30,6 +33,31 @@ class DensenetBackbone(nn.Module):
 
     def forward(self, x):
         x = self.features(x)
+        x = F.relu(x, inplace=True)
+        x = F.adaptive_avg_pool2d(x, (1, 1))
+        x = x.view(x.size(0), -1)
+        return x
+
+    def output_num(self):
+        return self._feature_dim
+
+class GhostBackbone(nn.Module):
+    def __init__(self):
+        super(GhostBackbone, self).__init__()
+        model_ghonst = ghostnet()
+
+        self.conv_stem=model_ghonst.conv_stem
+        self.bn1=model_ghonst.bn1
+        self.act1=model_ghonst.act1
+        self.blocks = model_ghonst.blocks
+
+        self._feature_dim = 120
+
+    def forward(self, x):
+        x = self.conv_stem(x)
+        x = self.bn1(x)
+        x = self.act1(x)
+        x = self.blocks(x)
         x = F.relu(x, inplace=True)
         x = F.adaptive_avg_pool2d(x, (1, 1))
         x = x.view(x.size(0), -1)
@@ -108,3 +136,12 @@ class ResNetBackbone(nn.Module):
     
     def output_num(self):
         return self._feature_dim
+
+if __name__ == "__main__":
+    import torch
+    from torchsummary import summary
+
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    m = GhonstBackbone().to(device)
+    # print(m)
+    summary(m, input_size=(3, 32, 32))

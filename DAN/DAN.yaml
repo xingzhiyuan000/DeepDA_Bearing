@@ -1,6 +1,7 @@
 # Backbone
 #backbone: resnet50
-backbone: densenet
+#backbone: densenet
+backbone: ghostnet
 
 # Transfer loss related
 transfer_loss_weight: 0.5
