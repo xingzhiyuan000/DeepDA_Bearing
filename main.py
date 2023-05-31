@@ -142,7 +142,8 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
             # loss = clf_loss
             print('分类loss:{:.4f}|迁移loss:{:.4f}|整体loss:{:.4f}'.format(clf_loss.item(),transfer_loss.item(),loss.item()) )
             optimizer.zero_grad()
-            loss.backward()
+            # loss.backward()
+            loss.backward(retain_graph=True)
             optimizer.step()
             if lr_scheduler:
                 lr_scheduler.step()
