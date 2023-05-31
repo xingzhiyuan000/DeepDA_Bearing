@@ -173,6 +173,7 @@ class GhostNet(nn.Module):
         self.conv_head = nn.Conv2d(input_channel, output_channel, 1, 1, 0, bias=True)
         self.act2 = nn.ReLU(inplace=True)
         self.classifier = nn.Linear(output_channel, num_classes)
+        self._feature_dim=120
 
     def forward(self, x):
         x = self.conv_stem(x)
@@ -181,9 +182,9 @@ class GhostNet(nn.Module):
         
         x = self.blocks(x)
 
-        # x = F.relu(x, inplace=True)
-        # x = F.adaptive_avg_pool2d(x, (1, 1))
-        # x = x.view(x.size(0), -1)
+        x = F.relu(x, inplace=True)
+        x = F.adaptive_avg_pool2d(x, (1, 1))
+        x = x.view(x.size(0), -1)
 
         # x = self.global_pool(x)
 
@@ -194,6 +195,9 @@ class GhostNet(nn.Module):
         #     x = F.dropout(x, p=self.dropout, training=self.training)
         # x = self.classifier(x)
         return x
+
+    def output_num(self):
+        return self._feature_dim
 
 
 def ghostnet(**kwargs):

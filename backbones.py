@@ -2,6 +2,7 @@ import torch.nn as nn
 from torchvision import models
 from nets.densenet import densenet_bearing
 from nets.ghostnet import ghostnet
+from nets.mobilenet_v1 import MobileNetV1
 import torch.nn.functional as F
 
 resnet_dict = {
@@ -22,7 +23,9 @@ def get_backbone(name):
     elif "densenet" == name.lower():
         return DensenetBackbone()
     elif "ghostnet" == name.lower():
-        return GhostBackbone()
+        return ghostnet()
+    elif "mobilenetv1" == name.lower():
+        return MobileV1Backbone()
 
 class DensenetBackbone(nn.Module):
     def __init__(self):
@@ -58,6 +61,24 @@ class GhostBackbone(nn.Module):
         x = self.bn1(x)
         x = self.act1(x)
         x = self.blocks(x)
+        x = F.relu(x, inplace=True)
+        x = F.adaptive_avg_pool2d(x, (1, 1))
+        x = x.view(x.size(0), -1)
+        return x
+
+    def output_num(self):
+        return self._feature_dim
+
+class MobileV1Backbone(nn.Module):
+    def __init__(self):
+        super(MobileV1Backbone, self).__init__()
+        model_mobilev1 = MobileNetV1()
+        self.stage1 = model_mobilev1.stage1
+
+        self._feature_dim = 256
+
+    def forward(self, x):
+        x = self.stage1(x)
         x = F.relu(x, inplace=True)
         x = F.adaptive_avg_pool2d(x, (1, 1))
         x = x.view(x.size(0), -1)
@@ -142,6 +163,6 @@ if __name__ == "__main__":
     from torchsummary import summary
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    m = GhonstBackbone().to(device)
+    m = MobileNetV1().to(device)
     # print(m)
     summary(m, input_size=(3, 32, 32))
