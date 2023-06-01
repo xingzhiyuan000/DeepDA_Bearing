@@ -24,7 +24,6 @@ def get_parser():
         formatter_class=configargparse.ArgumentDefaultsHelpFormatter,
     )
     # general configuration
-    parser.add("--config", is_config_file=True, help="config file path")
     parser.add("--seed", type=int, default=0)
     parser.add_argument('--num_workers', type=int, default=0)
 
@@ -34,7 +33,6 @@ def get_parser():
 
     # training related
     parser.add_argument('--batch_size', type=int, default=2)
-
     parser.add_argument('--model_path', type=str, required=True)
 
     return parser
