@@ -3,6 +3,7 @@ from torchvision import models
 from nets.densenet import densenet_bearing
 from nets.ghostnet import ghostnet
 from nets.mobilenet_v1 import MobileNetV1
+from nets.mobilenet_v2 import MobileNetV2
 import torch.nn.functional as F
 
 resnet_dict = {
@@ -26,6 +27,8 @@ def get_backbone(name):
         return ghostnet()
     elif "mobilenetv1" == name.lower():
         return MobileV1Backbone()
+    elif "mobilenetv2" == name.lower():
+        return MobileV2Backbone()
 
 class DensenetBackbone(nn.Module):
     def __init__(self):
@@ -79,6 +82,23 @@ class MobileV1Backbone(nn.Module):
 
     def forward(self, x):
         x = self.stage1(x)
+        x = F.relu(x, inplace=True)
+        x = F.adaptive_avg_pool2d(x, (1, 1))
+        x = x.view(x.size(0), -1)
+        return x
+
+    def output_num(self):
+        return self._feature_dim
+
+class MobileV2Backbone(nn.Module):
+    def __init__(self):
+        super(MobileV2Backbone, self).__init__()
+        model_mobilev2 = MobileNetV2()
+        self.features = model_mobilev2.features
+        self._feature_dim = 1280
+
+    def forward(self, x):
+        x = self.features(x)
         x = F.relu(x, inplace=True)
         x = F.adaptive_avg_pool2d(x, (1, 1))
         x = x.view(x.size(0), -1)
@@ -163,6 +183,6 @@ if __name__ == "__main__":
     from torchsummary import summary
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    m = MobileNetV1().to(device)
+    m = MobileV2Backbone().to(device)
     # print(m)
     summary(m, input_size=(3, 32, 32))
