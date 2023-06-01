@@ -158,8 +158,6 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
         
         info = 'Epoch: [{:2d}/{}], 【分类Loss】: {:.4f}, 【迁移Loss】: {:.4f}, 【整体Loss】: {:.4f}'.format(
                         e, args.n_epoch, train_loss_clf.avg, train_loss_transfer.avg, train_loss_total.avg)
-        with open('./result.txt', 'a') as file:
-            file.write(info + '\n')
         time_str = time.strftime('%Y-%m-%d_%H-%M-%S', time.localtime(time.time()))
         save_path = './models/'
         filepath = os.path.join(save_path, "model_{}_{}.pth".format(time_str, e + 1))
