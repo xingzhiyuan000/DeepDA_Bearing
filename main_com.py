@@ -164,7 +164,7 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
         time_str = time.strftime('%Y-%m-%d_%H-%M-%S', time.localtime(time.time()))
         save_path = './models/'
         filepath = os.path.join(save_path, "model_{}_{}.pth".format(time_str, e))
-        torch.save(model, filepath)  # 保存训练好的模型
+        # torch.save(model, filepath)  # 保存训练好的模型
 
         # Test
         stop += 1
