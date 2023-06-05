@@ -1,3 +1,4 @@
+import math
 import time
 
 import configargparse
@@ -110,6 +111,14 @@ def test(model, target_test_loader, args):
     acc = 100. * correct / len_target_dataset
     return acc, test_loss.avg
 
+#BNM权重随迭代次数变换exp(lamb*(x-100))
+def weight_BNM(x,lamb=0.5,epoch=100):
+    return math.exp(lamb * (x - epoch))
+
+#BNM权重随迭代次数变换exp(lamb*(x-100))
+def weight_LMMD(x,lamb=0.5,epoch=100):
+    return -math.exp(lamb * (x - epoch))+1
+
 def train(source_loader, target_train_loader, target_test_loader, model, optimizer, lr_scheduler, args):
     len_source_loader = len(source_loader)
     len_target_loader = len(target_train_loader)
@@ -143,7 +152,9 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
             data_target = data_target.to(args.device)
             
             clf_loss, transfer_loss_fir, transfer_loss_sec = model(data_source, data_target, label_source)
-            loss = clf_loss + args.transfer_loss_weight_fir * transfer_loss_fir + args.transfer_loss_weight_sec * transfer_loss_sec
+
+            # loss = clf_loss + args.transfer_loss_weight_fir * transfer_loss_fir + args.transfer_loss_weight_sec * transfer_loss_sec
+            loss = clf_loss + weight_BNM(e,0.5,args.n_epoch) * transfer_loss_fir + weight_LMMD(e,0.5,args.n_epoch) * transfer_loss_sec
             # loss = clf_loss
             print('分类loss:{:.4f}|迁移1loss:{:.4f}|迁移2loss:{:.4f}|整体loss:{:.4f}'.format(clf_loss.item(),transfer_loss_fir.item(),transfer_loss_sec.item(),loss.item()) )
             optimizer.zero_grad()
