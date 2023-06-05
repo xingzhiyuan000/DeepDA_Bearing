@@ -54,6 +54,7 @@ def get_parser():
     parser.add_argument('--transfer_loss_weight_sec', type=float, default=10)
     parser.add_argument('--transfer_loss_fir', type=str, default='mmd')
     parser.add_argument('--transfer_loss_sec', type=str, default='lmmd')
+    parser.add_argument('--use_exp_method', type=str2bool, default=True)
     return parser
 
 def set_random_seed(seed=0):
@@ -153,8 +154,11 @@ def train(source_loader, target_train_loader, target_test_loader, model, optimiz
             
             clf_loss, transfer_loss_fir, transfer_loss_sec = model(data_source, data_target, label_source)
 
-            loss = clf_loss + args.transfer_loss_weight_fir * transfer_loss_fir + args.transfer_loss_weight_sec * transfer_loss_sec
-            # loss = clf_loss + weight_BNM(e,0.5,args.n_epoch) * transfer_loss_fir + weight_LMMD(e,0.5,args.n_epoch) * transfer_loss_sec
+            if args.use_exp_method:
+                loss = clf_loss + weight_BNM(e, 0.5, args.n_epoch) * transfer_loss_fir + weight_LMMD(e, 0.5, args.n_epoch) * transfer_loss_sec
+            else:
+                loss = clf_loss + args.transfer_loss_weight_fir * transfer_loss_fir + args.transfer_loss_weight_sec * transfer_loss_sec
+
             # loss = clf_loss
             print('分类loss:{:.4f}|迁移1loss:{:.4f}|迁移2loss:{:.4f}|整体loss:{:.4f}'.format(clf_loss.item(),transfer_loss_fir.item(),transfer_loss_sec.item(),loss.item()) )
             optimizer.zero_grad()
