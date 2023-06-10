@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
-from torchsummary import summary
+# from torchsummary import summary
 
 
 # 搭建神经网络
@@ -9,7 +9,7 @@ class DTLCNN(nn.Module):
     def __init__(self):
         super(DTLCNN, self).__init__()
         # 1 28 28------16 24 24
-        self.conv1 = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=5, stride=1, padding=0, dilation=1)
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=16, kernel_size=5, stride=1, padding=0, dilation=1)
         self.bn1 = nn.BatchNorm2d(num_features=16)
         # 16 24 24------16 12 12
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1)
@@ -50,4 +50,4 @@ if __name__ == '__main__':
     input=input.to(device) #将数据转移到cuda上
     output=Model(input) #将输入喂入网络中进行处理
     print(output.shape)
-    summary(Model,input_size=(1,28,28)) #输入一个通道为3的10X10数据，并展示出网络模型结构和参数
+    # summary(Model,input_size=(1,28,28)) #输入一个通道为3的10X10数据，并展示出网络模型结构和参数
