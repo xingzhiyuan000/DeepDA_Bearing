@@ -5,6 +5,7 @@ from nets.ghostnet import ghostnet
 from nets.mobilenet_v1 import MobileNetV1
 from nets.mobilenet_v2 import MobileNetV2
 from nets.mobilenet_v3 import MobileNetV3
+from nets.DTLCNN import DTLCNN
 import torch.nn.functional as F
 
 resnet_dict = {
@@ -32,6 +33,9 @@ def get_backbone(name):
         return MobileV2Backbone()
     elif "mobilenetv3" == name.lower():
         return MobileV3Backbone()
+    elif "dltcnn" == name.lower():
+        return DTLCNN()
+
 
 class DensenetBackbone(nn.Module):
     def __init__(self):

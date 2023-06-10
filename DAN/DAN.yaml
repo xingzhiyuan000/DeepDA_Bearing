@@ -1,9 +1,10 @@
 # Backbone
 #backbone: resnet50
-backbone: densenet
+#backbone: densenet
 #backbone: ghostnet
 #backbone: mobilenetv1
 #backbone: mobilenetv2
+backbone: dltcnn
 
 # Transfer loss related
 transfer_loss_weight: 0.5
@@ -19,7 +20,7 @@ momentum: 0.9
 
 # Training related
 n_iter_per_epoch: 100
-n_epoch: 50
+n_epoch: 100
 
 # Others
 seed: 1
